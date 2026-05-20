@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plataforma Logística</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f4f6;
+    }
+
+    .sidebar {
+      width: 200px;
+      transition: 0.3s;
+    }
+
+    .content {
+      margin-left: 190px;
+    }
+
+    .menu-item:hover {
+      background: #00a651;
+      transform: translateX(5px);
+    }
+
+    .card-hover:hover {
+      transform: translateY(-5px);
+      transition: 0.3s;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+   table th,
+table td {
+  padding: 8px;
+  text-align: left;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+    table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+  </style>
+
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+
+  <div class="sidebar bg-black text-white fixed h-screen p-5 shadow-2xl">
+    <h1 class="text-3xl font-bold text-green-500 mb-10">
+      LOGÍSTICA
+    </h1>
+
+
+<ul class="space-y-6">
+
+  <li>
+    <button onclick="mostrarInicio()"
+      class="menu-item w-full text-left p-4 rounded-xl duration-300">
+      🏠 Inicio
+    </button>
+  </li>
+
+  <li>
+    <button onclick="mostrarDashboard()"
+      class="menu-item w-full text-left p-4 rounded-xl duration-300">
+      📊 Registros 
+    </button>
+  </li>
+
+
+</ul>
+
+  </div>
+
+  <!-- CONTENIDO -->
+
+  <div class="content p-10">
+
+
+<!-- INICIO -->
+<div id="inicio">
+  <div class="bg-white rounded-3xl shadow-2xl p-10">
+    <h1 class="text-5xl font-bold text-green-600 mb-6">
+     SOLICITUD DE INGRESO A DESCARGAR
+    </h1>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="card-hover bg-black text-white p-8 rounded-2xl shadow-xl">
+        <h2 class="text-2xl font-bold text-green-500 mb-4">
+          Solicitudes
+        </h2>
+
+        <p class="text-5xl font-bold" id="totalSolicitudes">
+          0
+        </p>
+      </div>
+
+      <div class="card-hover bg-green-600 text-white p-8 rounded-2xl shadow-xl">
+        <h2 class="text-2xl font-bold mb-4">
+          Transportadoras
+        </h2>
+
+        <p class="text-5xl font-bold" id="totalTransportadoras">
+          0
+        </p>
+      </div>
+
+      <div class="card-hover bg-white border-4 border-green-600 p-8 rounded-2xl shadow-xl">
+        <h2 class="text-2xl font-bold text-green-600 mb-4">
+          Estado Sistema
+        </h2>
+
+        <p class="text-3xl font-bold text-black">
+          ONLINE
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORMULARIO -->
+<div id="formulario" class="hidden">
+  <div class="bg-white rounded-3xl shadow-2xl p-10">
+    <h1 class="text-4xl font-bold text-green-600 mb-10">
+      Solicitud de Ingreso a Descargar
+    </h1>
+
+    <form id="transportForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <input
+        type="text"
+        id="transportadora"
+        placeholder="Transportadora"
+        class="border p-4 rounded-xl"
+        required
+      />
+
+      <input
+        type="text"
+        id="bl"
+        placeholder="BL"
+        class="border p-4 rounded-xl"
+        required
+      />
+
+      <input
+        type="text"
+        id="producto"
+        placeholder="Producto"
+        class="border p-4 rounded-xl"
+        required
+      />
+
+      <input
+        type="text"
+        id="pedido"
+        placeholder="Pedido"
+        class="border p-4 rounded-xl"
+      />
+
+      <input
+        type="text"
+        id="contenedor"
+        placeholder="Contenedor"
+        class="border p-4 rounded-xl"
+      />
+
+      <input
+        type="date"
+        id="fecha"
+        class="border p-4 rounded-xl"
+      />
+
+      <input
+        type="time"
+        id="hora"
+        class="border p-4 rounded-xl"
+      />
+
+      <input
+        type="text"
+        id="datos"
+        placeholder="Nombre / Placa / Cedula"
+        class="border p-4 rounded-xl"
+      />
+
+      <select id="estado" class="border p-4 rounded-xl">
+        <option value="">Seleccione Estado</option>
+        <option value="NACIONALIZADO">NACIONALIZADO</option>
+        <option value="TRASLADO">TRASLADO</option>
+      </select>
+
+      <button
+        type="submit"
+        class="bg-black hover:bg-green-700 text-white py-4 rounded-xl text-lg duration-300 col-span-1 md:col-span-2"
+      >
+        Enviar Solicitud
+      </button>
+    </form>
+  </div>
+</div>
+<!-- KPI -->
+<div id="kpi" class="hidden">
+
+  <div class="bg-white rounded-3xl shadow-2xl p-8">
+
+    <div class="mb-10">
+      <h1 class="text-4xl font-bold text-green-600 mb-2">
+        INDICADORES KPI 📊
+      </h1>
+
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+      <div class="bg-gray-50 rounded-2xl p-6 shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-black">
+        Transportadora 🚚
+        </h2>
+
+        <canvas id="graficaBarras"></canvas>
+      </div>
+
+      <div class="bg-gray-50 rounded-2xl p-6 shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-black">
+          Productos 📦
+        </h2>
+
+        <canvas id="graficaCircular"></canvas>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+
+  <div class="bg-white rounded-3xl shadow-2xl p-8">
+
+    <!-- HEADER -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+
+    <div class="w-full flex justify-center">
+
+  <h1 class="text-4xl font-bold text-green-600 text-center">
+    GESTION DE SOLICITUDES DE INGRESO A DESCARGAR
+  </h1>
+
+</div>
+
+ 
+
+    </div>
+
+    <!-- FILTROS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
+      <input
+        type="text"
+        id="filtroTransportadora"
+        placeholder="Filtrar por Transportadora"
+        class="border border-gray-300 p-4 rounded-xl focus:ring-2 focus:ring-green-500"
+        onkeyup="aplicarFiltros()"
+      />
+
+      <input
+        type="text"
+        id="filtroBL"
+        placeholder="Filtrar por BL"
+        class="border border-gray-300 p-4 rounded-xl focus:ring-2 focus:ring-green-500"
+        onkeyup="aplicarFiltros()"
+      />
+
+      <input
+        type="text"
+        id="filtroContenedor"
+        placeholder="Filtrar por Contenedor"
+        class="border border-gray-300 p-4 rounded-xl focus:ring-2 focus:ring-green-500"
+        onkeyup="aplicarFiltros()"
+      />
+
+    <input
+  type="date"
+  id="filtroFecha"
+  class="border border-gray-300 p-4 rounded-xl focus:ring-2 focus:ring-green-500"
+  oninput="aplicarFiltros()"
+/>
+
+    </div>
+
+    <!-- BOTONES FILTRO -->
+
+<div class="flex gap-4 mb-6">
+
+  <button
+    onclick="aplicarFiltros()"
+    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg duration-300"
+  >
+    Aplicar Filtros
+  </button>
+
+  <button
+    onclick="limpiarFiltros()"
+    class="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold shadow-lg duration-300"
+  >
+    Borrar Filtros
+  </button>
+
+       <button
+        onclick="exportarExcel()"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg duration-300"
+      >
+        Descargar Excel
+      </button>
+
+</div>
+    <!-- TABLA -->
+    <div class="overflow-auto rounded-2xl border border-gray-200">
+
+      <table class="min-w-full">
+
+        <thead class="bg-black text-white">
+
+<tr>
+  <th class="p-2 text-sm">#</th>
+  <th class="p-2 text-sm">Transportadora</th>
+  <th class="p-2 text-sm">BL</th>
+  <th class="p-2 text-sm">Pedido</th>
+  <th class="p-2 text-sm">Contenedor</th>
+  <th class="p-2 text-sm">Fecha Descargue</th>
+  <th class="p-2 text-sm">Datos</th>
+  <th class="p-2 text-sm">Hora Cita</th>
+  <th class="p-2 text-sm">Producto</th>
+  <th class="p-2 text-sm">Estado</th>
+</tr>
+
+        </thead>
+
+        <tbody id="tablaRegistros" class="bg-white">
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  <script>
+
+    // URL GOOGLE APPS SCRIPT
+    // REEMPLAZAR POR TU URL
+
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyLl8tb_O1cAAfpX0gM9NMJv-x2k67o3HJc1JsmNHfaHwtW05WFsp96JWL_BnPyNNAJOA/exec'
+
+    // IMPORTANTE:
+    // SI AUN NO HAS CONFIGURADO GOOGLE APPS SCRIPT,
+    // LA PAGINA DEBE FUNCIONAR IGUAL.
+    // SOLO COMENTA LA LINEA cargarDatos() AL FINAL DEL SCRIPT.
+
+
+    let registros = []
+
+    // MOSTRAR SECCIONES
+
+    function ocultarTodo() {
+      document.getElementById('inicio').classList.add('hidden')
+      document.getElementById('dashboard').classList.add('hidden')
+      document.getElementById('kpi').classList.add('hidden')
+    }
+
+    function mostrarInicio() {
+      ocultarTodo()
+      document.getElementById('inicio').classList.remove('hidden')
+    }
+    function mostrarKPI() {
+
+  ocultarTodo()
+
+  document.getElementById('kpi').classList.remove('hidden')
+
+  generarGraficas()
+}
+
+    function mostrarDashboard() {
+      ocultarTodo()
+      document.getElementById('dashboard').classList.remove('hidden')
+      cargarDatos()
+    }
+
+    // GUARDAR FORMULARIO
+
+    document.getElementById('transportForm').addEventListener('submit', async function(e) {
+      e.preventDefault()
+
+      const data = {
+        transportadora: document.getElementById('transportadora').value,
+        bl: document.getElementById('bl').value,
+        producto: document.getElementById('producto').value,
+        pedido: document.getElementById('pedido').value,
+        contenedor: document.getElementById('contenedor').value,
+        fecha: document.getElementById('fecha').value,
+        hora: document.getElementById('hora').value,
+        datos: document.getElementById('datos').value,
+        estado: document.getElementById('estado').value
+      }
+
+      try {
+
+        await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        })
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Solicitud enviada correctamente',
+          confirmButtonColor: '#00A651'
+        })
+
+        document.getElementById('transportForm').reset()
+
+        cargarDatos()
+
+      } catch (error) {
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al guardar',
+          text: error.message
+        })
+      }
+    })
+
+    // CARGAR DATOS
+
+    async function cargarDatos() {
+
+      try {
+
+        const response = await fetch(API_URL)
+        const data = await response.json()
+
+        registros = data
+
+        let tabla = ''
+
+       data.reverse().forEach((item, index) =>  {
+
+        const fechaFormateada = item.fecha
+  ? new Date(item.fecha).toLocaleDateString('es-CO')
+  : ''
+
+const horaFormateada = item.hora
+  ? convertirHora(item.hora)
+  : ''
+
+tabla += `
+ <tr class="border-b hover:bg-gray-100 duration-200">
+  <td>${index + 1}</td>
+
+    <td>${item.transportadora || ''}</td>
+
+    <td>${item.bl || ''}</td>
+
+    <td>${item.pedido || ''}</td>
+
+    <td>${item.contenedor || ''}</td>
+
+    <td>${fechaFormateada}</td>
+
+    <td>${item.datos || ''}</td>
+
+    <td>${horaFormateada}</td>
+
+    <td>${item.producto || ''}</td>
+
+    <td>
+      <span class="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-sm font-bold">
+        ${item.estado || ''}
+      </span>
+    </td>
+
+  </tr>
+`
+        })
+
+        document.getElementById('tablaRegistros').innerHTML = tabla
+
+        document.getElementById('totalSolicitudes').innerText = data.length
+
+        const transportadoras = [...new Set(data.map(x => x.transportadora))]
+
+        document.getElementById('totalTransportadoras').innerText = transportadoras.length
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    // FILTRAR TABLA
+function aplicarFiltros() {
+
+  const transportadora =
+    document.getElementById('filtroTransportadora')
+      .value
+      .toLowerCase()
+      .trim()
+
+  const bl =
+    document.getElementById('filtroBL')
+      .value
+      .toLowerCase()
+      .trim()
+
+  const contenedor =
+    document.getElementById('filtroContenedor')
+      .value
+      .toLowerCase()
+      .trim()
+
+  const fecha =
+    document.getElementById('filtroFecha').value
+
+  const filas =
+    document.querySelectorAll('#tablaRegistros tr')
+
+  filas.forEach(fila => {
+
+    // COLUMNAS
+    const textoTransportadora =
+      fila.children[1]?.innerText
+        .toLowerCase() || ''
+
+    const textoBL =
+      fila.children[2]?.innerText
+        .toLowerCase() || ''
+
+    const textoContenedor =
+      fila.children[4]?.innerText
+        .toLowerCase() || ''
+
+    const textoFecha =
+      fila.children[5]?.innerText.trim() || ''
+
+    // VALIDACIONES TEXTO
+    const coincideTransportadora =
+      textoTransportadora.includes(transportadora)
+
+    const coincideBL =
+      textoBL.includes(bl)
+
+    const coincideContenedor =
+      textoContenedor.includes(contenedor)
+
+    // VALIDACION FECHA
+    let coincideFecha = true
+
+    if (fecha) {
+
+      // INPUT YYYY-MM-DD
+      const partesInput = fecha.split('-')
+
+      const fechaFiltro =
+        `${parseInt(partesInput[2])}/${parseInt(partesInput[1])}/${partesInput[0]}`
+
+      coincideFecha =
+        textoFecha === fechaFiltro
+
+    }
+
+    // MOSTRAR / OCULTAR
+    if (
+      coincideTransportadora &&
+      coincideBL &&
+      coincideContenedor &&
+      coincideFecha
+    ) {
+
+      fila.style.display = ''
+
+    } else {
+
+      fila.style.display = 'none'
+
+    }
+
+  })
+
+}
+function limpiarFiltros() {
+
+  document.getElementById('filtroTransportadora').value = ''
+
+  document.getElementById('filtroBL').value = ''
+
+  document.getElementById('filtroContenedor').value = ''
+
+  document.getElementById('filtroFecha').value = ''
+
+  const filas =
+    document.querySelectorAll('#tablaRegistros tr')
+
+  filas.forEach(fila => {
+
+    fila.style.display = ''
+
+  })
+
+}
+function exportarExcel() {
+
+  const tabla = document.querySelector('table')
+
+  const workbook = XLSX.utils.table_to_book(tabla, {
+    sheet: 'Dashboard'
+  })
+
+  XLSX.writeFile(workbook, 'registros_transportadoras.xlsx')
+}
+let chartBar
+let chartPie
+
+function generarGraficas() {
+
+  const productos = {}
+  const transportadoras = {}
+
+  registros.forEach(item => {
+
+    // PRODUCTOS
+    const producto =
+      item.producto || 'SIN PRODUCTO'
+
+    productos[producto] =
+      (productos[producto] || 0) + 1
+
+    // TRANSPORTADORAS
+    const transportadora =
+      item.transportadora || 'SIN NOMBRE'
+
+    transportadoras[transportadora] =
+      (transportadoras[transportadora] || 0) + 1
+
+  })
+
+  const ctxBar =
+    document.getElementById('graficaBarras')
+
+  const ctxPie =
+    document.getElementById('graficaCircular')
+
+  if (chartBar) {
+    chartBar.destroy()
+  }
+
+  if (chartPie) {
+    chartPie.destroy()
+  }
+
+  // BARRAS → PRODUCTOS
+
+  chartBar = new Chart(ctxBar, {
+
+    type: 'bar',
+
+    data: {
+
+      labels: Object.keys(productos),
+
+      datasets: [{
+
+        label: 'Cantidad de Productos',
+
+        data: Object.values(productos),
+
+        backgroundColor: '#00A651'
+
+      }]
+    },
+
+    options: {
+
+      responsive: true,
+
+      plugins: {
+
+        legend: {
+          display: false
+        }
+      }
+    }
+  })
+
+  // CIRCULAR → TRANSPORTADORAS
+
+  chartPie = new Chart(ctxPie, {
+
+    type: 'doughnut',
+
+    data: {
+
+      labels: Object.keys(transportadoras),
+
+      datasets: [{
+
+        label: 'Transportadoras',
+
+        data: Object.values(transportadoras),
+
+        backgroundColor: [
+          '#00A651',
+          '#111111',
+          '#4ade80',
+          '#86efac',
+          '#166534',
+          '#22c55e'
+        ]
+
+      }]
+    },
+
+    options: {
+      responsive: true
+    }
+  })
+}
+function convertirHora(hora) {
+
+  if (!hora) return ''
+
+  try {
+
+    // SI VIENE COMO FECHA DE GOOGLE
+    const fechaHora = new Date(hora)
+
+    if (!isNaN(fechaHora)) {
+
+      return fechaHora.toLocaleTimeString('es-CO', {
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      })
+
+    }
+
+    // SI VIENE COMO TEXTO
+    const partes = hora.split(':')
+
+    let horas = parseInt(partes[0])
+
+    const minutos = partes[1] || '00'
+
+    const segundos = partes[2] || '00'
+
+    const ampm = horas >= 12 ? 'p.m.' : 'a.m.'
+
+    horas = horas % 12
+
+    horas = horas ? horas : 12
+
+    return `${horas}:${minutos}:${segundos} ${ampm}`
+
+  } catch (error) {
+
+    return hora
+  }
+}
+    // INICIAR
+
+    cargarDatos()
+
+  </script>
+
+</body>
+</html>
+
+<!-- ========================================================= -->
+
+<!-- CONFIGURAR GOOGLE SHEETS + GOOGLE APPS SCRIPT -->
+
+<!-- ========================================================= -->
+
+<!--
+
+PASO 1
+======
+
+ABRIR EL GOOGLE SHEET DEL FORMULARIO.
+
+
+PASO 2
+======
+
+EXTENSIONES -> APPS SCRIPT
+
+
+PASO 3
+======
+
+BORRAR TODO Y PEGAR ESTE CODIGO:
+
+------------------------------------------------------------
+
+function doGet() {
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Respuestas de formulario 1')
+
+  const data = sheet.getDataRange().getValues()
+
+  const headers = data.shift()
+
+  const json = data.map(row => {
+
+    let obj = {}
+
+    headers.forEach((header, index) => {
+      obj[header.toLowerCase()] = row[index]
+    })
+
+    return {
+      transportadora: row[0],
+      bl: row[1],
+      producto: row[2],
+      pedido: row[3],
+      contenedor: row[4],
+      fecha: row[5],
+      hora: row[6],
+      datos: row[7],
+      estado: row[8]
+    }
+  })
+
+  return ContentService
+    .createTextOutput(JSON.stringify(json))
+    .setMimeType(ContentService.MimeType.JSON)
+}
+
+function doPost(e) {
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Respuestas de formulario 1')
+
+  const data = JSON.parse(e.postData.contents)
+
+  sheet.appendRow([
+    data.transportadora,
+    data.bl,
+    data.producto,
+    data.pedido,
+    data.contenedor,
+    data.fecha,
+    data.hora,
+    data.datos,
+    data.estado
+  ])
+
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: true
+    }))
+    .setMimeType(ContentService.MimeType.JSON)
+}
+
+------------------------------------------------------------
+
+PASO 4
+======
+
+IMPLEMENTAR:
+
+IMPLEMENTAR -> NUEVA IMPLEMENTACION
+
+TIPO:
+
+Aplicacion web
+
+
+PASO 5
+======
+
+PERMISOS:
+
+CUALQUIERA
+
+
+PASO 6
+======
+
+COPIAR LA URL QUE GENERA.
+
+
+PASO 7
+======
+
+REEMPLAZAR ESTA LINEA EN EL HTML:
+
+const API_URL = 'https://script.google.com/macros/s/COLOCA_AQUI_TU_URL/exec'
+
+
+LISTO.
+
+YA TENDRAS:
+
+✅ SINCRONIZACION CON GOOGLE FORMS
+✅ DASHBOARD
+✅ FORMULARIO PROFESIONAL
+✅ REGISTROS EN TIEMPO REAL
+✅ TODO EN UN SOLO INDEX.HTML
+✅ COMPATIBLE CON VISUAL STUDIO CODE
+
+-->
