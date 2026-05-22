@@ -290,7 +290,37 @@ table td:nth-child(2) {
     </div>
 
   </div>
+<!-- FILTRO FECHAS KPI -->
 
+<div class="flex flex-wrap gap-4 mb-8 items-end">
+
+<!-- FILTRO KPI -->
+
+<div class="flex items-end gap-4 mb-8">
+
+  <div>
+    <label class="block text-sm font-semibold mb-2">
+      Filtrar Dashboard por Fecha
+    </label>
+
+    <input
+      type="date"
+      id="filtroFechaKPI"
+      onchange="filtrarDashboardKPI()"
+      class="border border-gray-300 p-3 rounded-xl"
+    >
+  </div>
+
+  <button
+    onclick="limpiarDashboardKPI()"
+    class="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg"
+  >
+    Mostrar Todo
+  </button>
+
+</div>
+
+</div>
   <!-- KPI CARDS -->
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-8">
 
@@ -721,7 +751,48 @@ table td:nth-child(2) {
 
   generarGraficas()
 }
+function filtrarDashboardKPI() {
 
+  const fechaFiltro =
+    document.getElementById('filtroFechaKPI').value
+
+  if (!fechaFiltro) {
+    generarGraficas(registros)
+    return
+  }
+
+  const registrosFiltrados = registros.filter(item => {
+
+    if (!item.fecha) return false
+
+    // FORMATEAR FECHA DEL REGISTRO
+    const fechaRegistro = new Date(item.fecha)
+
+    const año = fechaRegistro.getFullYear()
+
+    const mes = String(
+      fechaRegistro.getMonth() + 1
+    ).padStart(2, '0')
+
+    const dia = String(
+      fechaRegistro.getDate()
+    ).padStart(2, '0')
+
+    const fechaFormateada =
+      `${año}-${mes}-${dia}`
+
+    return fechaFormateada === fechaFiltro
+  })
+
+  generarGraficas(registrosFiltrados)
+}
+
+function limpiarDashboardKPI() {
+
+  document.getElementById('filtroFechaKPI').value = ''
+
+  generarGraficas(registros)
+}
     function mostrarDashboard() {
       ocultarTodo()
       document.getElementById('dashboard').classList.remove('hidden')
@@ -771,6 +842,7 @@ table td:nth-child(2) {
         })
       }
     })
+
 
     // CARGAR DATOS
 
@@ -962,7 +1034,7 @@ let chartBar
 let chartPie
 let chartLine
 
-function generarGraficas() {
+function generarGraficas(dataFiltrada = registros) {
 
   if (!registros || registros.length === 0) {
     console.log('No hay registros')
@@ -974,7 +1046,7 @@ function generarGraficas() {
   const fechas = {}
   const contenedores = new Set()
 
-  registros.forEach(item => {
+  dataFiltrada.forEach(item => {
 
     // PRODUCTOS
     const producto = item.producto || 'SIN PRODUCTO'
@@ -1034,7 +1106,7 @@ function generarGraficas() {
 // INDICADORES OPERATIVOS
 
 document.getElementById('indicadorSolicitudes')
-  .innerText = registros.length
+  .innerText = dataFiltrada.length
 
 document.getElementById('indicadorProductos')
   .innerText = Object.keys(productos).length
@@ -1222,8 +1294,6 @@ document.getElementById('indicadorContenedores')
   })
 
 }
-
-
 
 function convertirHora(hora) {
 
