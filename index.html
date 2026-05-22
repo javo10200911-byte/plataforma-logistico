@@ -107,10 +107,10 @@ table td:nth-child(2) {
   <!-- NAVBAR SUPERIOR -->
 
 <div class="bg-black shadow-xl px-8 py-4 flex items-center justify-between">
-  <div class="flex items-center gap-4">
+<div class="flex items-center gap-4">
 
   <img
-    src="https://raw.githubusercontent.com/javo10200911-byte/plataforma-logistico/main/19.png"
+    src="https://rawgithub.com/javo10200911-byte/plataforma-logistico/blob/main/19.png"
     alt="Logo"
    class="w-20 h-20 object-contain rounded-2xl bg-white p-2 shadow-lg"
   >
@@ -308,26 +308,122 @@ table td:nth-child(2) {
 <!-- FILTRO KPI -->
 
 <div class="flex items-end gap-4 mb-8">
+  <!-- FILTRO EJECUTIVO -->
 
-  <div>
-    <label class="block text-sm font-semibold mb-2">
-      Filtrar Dashboard por Fecha
-    </label>
+<div class="bg-white border border-green-200 rounded-2xl p-6 shadow-sm mb-8">
 
-    <input
-      type="date"
-      id="filtroFechaKPI"
-      onchange="filtrarDashboardKPI()"
-      class="border border-gray-300 p-3 rounded-xl"
-    >
+  <div class="flex flex-wrap gap-6 items-end">
+
+    <!-- RANGO RAPIDO -->
+    <div class="flex-1 min-w-[300px]">
+
+      <p class="text-sm font-bold text-gray-700 mb-3">
+        📅 Rango rápido
+      </p>
+
+      <div class="flex flex-wrap gap-2">
+
+        <button onclick="rangoRapido(0)"
+          class="bg-gray-100 hover:bg-green-600 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold duration-300">
+          Hoy
+        </button>
+
+        <button onclick="rangoRapido(1)"
+          class="bg-gray-100 hover:bg-green-600 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold duration-300">
+          Ayer
+        </button>
+
+        <button onclick="rangoRapido(7)"
+          class="bg-gray-100 hover:bg-green-600 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold duration-300">
+          7 días
+        </button>
+
+        <button onclick="rangoRapido(30)"
+          class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+          30 días
+        </button>
+
+        <button onclick="esteMes()"
+          class="bg-gray-100 hover:bg-green-600 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold duration-300">
+          Este mes
+        </button>
+
+        <button onclick="esteAnio()"
+          class="bg-gray-100 hover:bg-green-600 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold duration-300">
+          Este año
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- RANGO PERSONALIZADO -->
+
+    <div class="flex flex-wrap gap-4 items-end">
+
+      <div>
+
+        <label class="block text-sm font-bold text-gray-700 mb-2">
+          Fecha desde
+        </label>
+
+        <input
+          type="date"
+          id="fechaInicioKPI"
+          class="border border-gray-300 p-3 rounded-xl"
+        >
+
+      </div>
+
+      <div>
+
+        <label class="block text-sm font-bold text-gray-700 mb-2">
+          Fecha hasta
+        </label>
+
+        <input
+          type="date"
+          id="fechaFinKPI"
+          class="border border-gray-300 p-3 rounded-xl"
+        >
+
+      </div>
+
+    </div>
+
+    <!-- BOTONES -->
+
+    <div class="flex gap-3">
+
+      <button
+        onclick="filtrarDashboardKPI()"
+        class="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-bold shadow-lg duration-300"
+      >
+        Aplicar Filtros
+      </button>
+
+      <button
+        onclick="limpiarDashboardKPI()"
+        class="border-2 border-green-500 text-green-600 hover:bg-green-600 hover:text-white px-8 py-3 rounded-xl font-bold duration-300"
+      >
+        Limpiar
+      </button>
+
+    </div>
+
   </div>
+  
 
-  <button
-    onclick="limpiarDashboardKPI()"
-    class="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg"
-  >
-    Mostrar Todo
-  </button>
+  <!-- TEXTO INFERIOR -->
+
+  <div class="mt-6 flex flex-wrap gap-4 text-sm text-gray-600">
+
+    <span id="textoPeriodo">
+      Periodo seleccionado:
+      Todos los registros
+    </span>
+
+  </div>
 
 </div>
 
@@ -764,45 +860,121 @@ table td:nth-child(2) {
 }
 function filtrarDashboardKPI() {
 
-  const fechaFiltro =
-    document.getElementById('filtroFechaKPI').value
+  const fechaInicio =
+    document.getElementById('fechaInicioKPI').value
 
-  if (!fechaFiltro) {
-    generarGraficas(registros)
+  const fechaFin =
+    document.getElementById('fechaFinKPI').value
+
+  if (!fechaInicio || !fechaFin) {
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Seleccione ambas fechas'
+    })
+
     return
   }
+
+  // FORMATO YYYY-MM-DD
+  const inicio = fechaInicio
+  const fin = fechaFin
 
   const registrosFiltrados = registros.filter(item => {
 
     if (!item.fecha) return false
 
-    // FORMATEAR FECHA DEL REGISTRO
+    // CONVERTIR FECHA DEL REGISTRO
     const fechaRegistro = new Date(item.fecha)
 
-    const año = fechaRegistro.getFullYear()
+    const año =
+      fechaRegistro.getFullYear()
 
-    const mes = String(
-      fechaRegistro.getMonth() + 1
-    ).padStart(2, '0')
+    const mes =
+      String(fechaRegistro.getMonth() + 1)
+      .padStart(2, '0')
 
-    const dia = String(
-      fechaRegistro.getDate()
-    ).padStart(2, '0')
+    const dia =
+      String(fechaRegistro.getDate())
+      .padStart(2, '0')
 
     const fechaFormateada =
       `${año}-${mes}-${dia}`
 
-    return fechaFormateada === fechaFiltro
+    return fechaFormateada >= inicio &&
+           fechaFormateada <= fin
   })
+  document.getElementById('textoPeriodo').innerHTML =
+  `Periodo seleccionado: ${fechaInicio} hasta ${fechaFin}`
 
   generarGraficas(registrosFiltrados)
 }
 
 function limpiarDashboardKPI() {
 
-  document.getElementById('filtroFechaKPI').value = ''
+  document.getElementById('fechaInicioKPI').value = ''
+
+  document.getElementById('fechaFinKPI').value = ''
+
+  document.getElementById('textoPeriodo').innerHTML =
+    'Periodo seleccionado: Todos los registros'
 
   generarGraficas(registros)
+
+}
+function rangoRapido(dias) {
+
+  const hoy = new Date()
+
+  const inicio = new Date()
+
+  inicio.setDate(hoy.getDate() - dias)
+
+  const fechaInicio =
+    inicio.toISOString().split('T')[0]
+
+  const fechaFin =
+    hoy.toISOString().split('T')[0]
+
+  document.getElementById('fechaInicioKPI').value =
+    fechaInicio
+
+  document.getElementById('fechaFinKPI').value =
+    fechaFin
+
+  filtrarDashboardKPI()
+}
+
+function esteMes() {
+
+  const hoy = new Date()
+
+  const inicio =
+    new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+
+  document.getElementById('fechaInicioKPI').value =
+    inicio.toISOString().split('T')[0]
+
+  document.getElementById('fechaFinKPI').value =
+    hoy.toISOString().split('T')[0]
+
+  filtrarDashboardKPI()
+}
+
+function esteAnio() {
+
+  const hoy = new Date()
+
+  const inicio =
+    new Date(hoy.getFullYear(), 0, 1)
+
+  document.getElementById('fechaInicioKPI').value =
+    inicio.toISOString().split('T')[0]
+
+  document.getElementById('fechaFinKPI').value =
+    hoy.toISOString().split('T')[0]
+
+  filtrarDashboardKPI()
 }
     function mostrarDashboard() {
       ocultarTodo()
@@ -1101,7 +1273,7 @@ function generarGraficas(dataFiltrada = registros) {
   // KPI CARDS
 
   document.getElementById('kpiSolicitudes').innerText =
-    registros.length
+  dataFiltrada.length
 
   document.getElementById('kpiTransportadoras').innerText =
     Object.keys(transportadoras).length
