@@ -20,19 +20,24 @@
       background: #f3f4f6;
     }
 
-    .sidebar {
-      width: 200px;
-      transition: 0.3s;
-    }
+.sidebar {
+  width: 260px;
+  transition: 0.3s;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+table {
+  min-width: 1700px;
+}
 
-    .content {
-      margin-left: 190px;
-    }
+.content {
+  padding: 30px;
+}
 
-    .menu-item:hover {
-      background: #00a651;
-      transform: translateX(5px);
-    }
+   .menu-item:hover {
+  transform: translateX(5px);
+  background: #1f2937;
+}
 
     .card-hover:hover {
       transform: translateY(-5px);
@@ -43,55 +48,102 @@
       border-collapse: collapse;
       width: 100%;
     }
-
-   table th,
+table th,
 table td {
-  padding: 8px;
+  padding: 14px;
   text-align: left;
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
+}
+
+table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+table th:first-child,
+table td:first-child {
+  padding-left: 30px;
+}
+
+table th:nth-child(2),
+table td:nth-child(2) {
+  min-width: 260px;
+}
+
+::-webkit-scrollbar {
+  height: 12px;
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #16a34a;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e5e7eb;
 }
 
     table tr:nth-child(even) {
       background: #f9f9f9;
     }
+    canvas {
+  width: 100% !important;
+}
+
+#kpi {
+  width: 100%;
+}
+
+#dashboard {
+  width: 100%;
+}
   </style>
 
 </head>
 <body>
 
-  <!-- SIDEBAR -->
+  <!-- NAVBAR SUPERIOR -->
 
-  <div class="sidebar bg-black text-white fixed h-screen p-5 shadow-2xl">
-    <h1 class="text-3xl font-bold text-green-500 mb-10">
+<div class="bg-black shadow-xl px-8 py-4 flex items-center justify-between">
+
+  <div>
+    <h1 class="text-4xl font-extrabold text-green-500">
       LOGÍSTICA
     </h1>
 
+    <p class="text-gray-400 tracking-[6px] text-sm">
+      PLATAFORMA
+    </p>
+  </div>
 
-<ul class="space-y-6">
+  <div class="flex gap-4">
 
-  <li>
+    <button onclick="mostrarKPI()"
+      class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl font-bold shadow-lg duration-300">
+      📊 Dashboard Ejecutivo
+    </button>
+
+    <button onclick="mostrarDashboard()"
+      class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl font-bold shadow-lg duration-300">
+      📋 Registros
+    </button>
+
     <button onclick="mostrarInicio()"
-      class="menu-item w-full text-left p-4 rounded-xl duration-300">
+      class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl font-bold shadow-lg duration-300">
       🏠 Inicio
     </button>
-  </li>
 
-  <li>
-    <button onclick="mostrarDashboard()"
-      class="menu-item w-full text-left p-4 rounded-xl duration-300">
-      📊 Registros 
-    </button>
-  </li>
+  </div>
 
-
-</ul>
+</div>
 
   </div>
 
   <!-- CONTENIDO -->
 
-  <div class="content p-10">
+ <div class="content p-10 overflow-x-auto">
 
 
 <!-- INICIO -->
@@ -218,33 +270,291 @@ table td {
   </div>
 </div>
 <!-- KPI -->
+<!-- KPI PROFESIONAL -->
 <div id="kpi" class="hidden">
 
-  <div class="bg-white rounded-3xl shadow-2xl p-8">
+  <!-- HEADER -->
+  <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
 
-    <div class="mb-10">
-      <h1 class="text-4xl font-bold text-green-600 mb-2">
-        INDICADORES KPI 📊
-      </h1>
+    <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
+
+      <div>
+        <h1 class="text-5xl font-bold text-black">
+          Dashboard Ejecutivo
+        </h1>
+
+        <p class="text-gray-500 mt-2 text-lg">
+          Indicadores estratégicos de operación logística
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-8">
+
+    <!-- TOTAL -->
+    <div class="bg-black text-white rounded-3xl p-6 shadow-xl">
+
+      <p class="text-gray-300 text-sm uppercase">
+        Total Solicitudes
+      </p>
+
+      <h2
+        id="kpiSolicitudes"
+        class="text-5xl font-bold mt-4"
+      >
+        0
+      </h2>
+
+      <p class="text-green-400 mt-2">
+        100% del periodo
+      </p>
 
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- TRANSPORTADORAS -->
+    <div class="bg-green-600 text-white rounded-3xl p-6 shadow-xl">
 
-      <div class="bg-gray-50 rounded-2xl p-6 shadow-lg">
-        <h2 class="text-2xl font-bold mb-6 text-black">
-        Transportadora 🚚
-        </h2>
+      <p class="text-green-100 text-sm uppercase">
+        Transportadoras
+      </p>
 
+      <h2
+        id="kpiTransportadoras"
+        class="text-5xl font-bold mt-4"
+      >
+        0
+      </h2>
+
+      <p class="mt-2 text-green-100">
+        Activas en el periodo
+      </p>
+
+    </div>
+
+    <!-- PRODUCTO -->
+    <div class="bg-white rounded-3xl p-6 shadow-xl border-l-4 border-green-500">
+
+      <p class="text-gray-500 text-sm uppercase">
+        Producto Líder
+      </p>
+
+      <h2
+        id="kpiProducto"
+        class="text-2xl font-bold mt-4"
+      >
+        -
+      </h2>
+
+      <p class="text-green-600 mt-2">
+        Más solicitado
+      </p>
+
+    </div>
+
+    <!-- TRANSPORTADORA TOP -->
+    <div class="bg-white rounded-3xl p-6 shadow-xl border-l-4 border-black">
+
+      <p class="text-gray-500 text-sm uppercase">
+        Transportadora Líder
+      </p>
+
+      <h2
+        id="kpiTopTransportadora"
+        class="text-2xl font-bold mt-4"
+      >
+        -
+      </h2>
+
+      <p class="text-black mt-2">
+        Mayor operación
+      </p>
+
+    </div>
+
+    <!-- CONTENEDORES -->
+    <div class="bg-white rounded-3xl p-6 shadow-xl border-l-4 border-green-400">
+
+      <p class="text-gray-500 text-sm uppercase">
+        Contenedores
+      </p>
+
+      <h2
+        id="kpiContenedores"
+        class="text-5xl font-bold mt-4"
+      >
+        0
+      </h2>
+
+      <p class="text-green-600 mt-2">
+        Únicos registrados
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- GRAFICAS -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+
+    <!-- TOP TRANSPORTADORAS -->
+    <div class="bg-white rounded-3xl p-8 shadow-xl xl:col-span-1">
+
+      <h2 class="text-3xl font-bold mb-2">
+        Top Transportadoras
+      </h2>
+
+      <p class="text-gray-500 mb-6">
+        Cantidad de solicitudes
+      </p>
+
+      <div style="height: 450px;">
         <canvas id="graficaBarras"></canvas>
       </div>
 
-      <div class="bg-gray-50 rounded-2xl p-6 shadow-lg">
-        <h2 class="text-2xl font-bold mb-6 text-black">
-          Productos 📦
-        </h2>
+    </div>
 
+    <!-- PRODUCTOS -->
+    <div class="bg-white rounded-3xl p-8 shadow-xl xl:col-span-1">
+
+      <h2 class="text-3xl font-bold mb-2">
+        Distribución de Productos
+      </h2>
+
+      <p class="text-gray-500 mb-6">
+        Participación porcentual
+      </p>
+
+      <div style="height: 450px;">
         <canvas id="graficaCircular"></canvas>
+      </div>
+
+    </div>
+
+    <!-- TENDENCIA -->
+    <div class="bg-white rounded-3xl p-8 shadow-xl">
+
+  <h2 class="text-2xl font-bold mb-2">
+    Tendencia Operacional
+  </h2>
+
+  <p class="text-gray-500 mb-6">
+    Solicitudes por fecha
+  </p>
+
+  <div style="height: 350px;">
+    <canvas id="graficaLinea"></canvas>
+  </div>
+
+</div>
+
+  </div>
+
+  <!-- TABLAS -->
+  <div class="bg-white rounded-3xl p-8 shadow-xl">
+
+  <h2 class="text-2xl font-bold mb-8">
+    Indicadores Operativos
+  </h2>
+
+  <div class="space-y-6">
+
+    <div class="flex justify-between border-b pb-4">
+
+      <span class="font-semibold">
+        Solicitudes Totales
+      </span>
+
+      <span id="indicadorSolicitudes"
+        class="font-bold text-green-600">
+        0
+      </span>
+
+    </div>
+
+    <div class="flex justify-between border-b pb-4">
+
+      <span class="font-semibold">
+        Productos Diferentes
+      </span>
+
+      <span id="indicadorProductos"
+        class="font-bold text-green-600">
+        0
+      </span>
+
+    </div>
+
+    <div class="flex justify-between border-b pb-4">
+
+      <span class="font-semibold">
+        Transportadoras
+      </span>
+
+      <span id="indicadorTransportadoras"
+        class="font-bold text-green-600">
+        0
+      </span>
+
+    </div>
+
+    <div class="flex justify-between">
+
+      <span class="font-semibold">
+        Contenedores Únicos
+      </span>
+
+      <span id="indicadorContenedores"
+        class="font-bold text-green-600">
+        0
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+    <!-- RECOMENDACIONES -->
+    <div class="bg-white rounded-3xl p-8 shadow-xl">
+
+      <h2 class="text-3xl font-bold mb-6">
+        Análisis y Recomendaciones
+      </h2>
+
+      <div class="space-y-4">
+
+        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-xl">
+          <p class="font-bold text-green-700">
+            Alta demanda operacional
+          </p>
+
+          <p class="text-gray-600 mt-1">
+            Revisar disponibilidad del producto líder.
+          </p>
+        </div>
+
+        <div class="bg-gray-50 border-l-4 border-black p-4 rounded-xl">
+          <p class="font-bold text-black">
+            Concentración logística
+          </p>
+
+          <p class="text-gray-600 mt-1">
+            Validar dependencia de transportadoras principales.
+          </p>
+        </div>
+
+        <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-xl">
+          <p class="font-bold text-green-700">
+            Optimización de descargues
+          </p>
+
+          <p class="text-gray-600 mt-1">
+            Analizar horarios pico para evitar congestión.
+          </p>
+        </div>
+
       </div>
 
     </div>
@@ -335,36 +645,43 @@ table td {
 
 </div>
     <!-- TABLA -->
-    <div class="overflow-auto rounded-2xl border border-gray-200">
+    <div class="w-full overflow-x-auto overflow-y-auto rounded-3xl border border-gray-200 shadow-lg">
 
-      <table class="min-w-full">
+  <table class="min-w-[2000px] w-full">
 
-        <thead class="bg-black text-white">
+    <thead class="bg-black text-white sticky top-0 z-10">
 
-<tr>
-  <th class="p-2 text-sm">#</th>
-  <th class="p-2 text-sm">Transportadora</th>
-  <th class="p-2 text-sm">BL</th>
-  <th class="p-2 text-sm">Pedido</th>
-  <th class="p-2 text-sm">Contenedor</th>
-  <th class="p-2 text-sm">Fecha Descargue</th>
-  <th class="p-2 text-sm">Datos</th>
-  <th class="p-2 text-sm">Hora Cita</th>
-  <th class="p-2 text-sm">Producto</th>
-  <th class="p-2 text-sm">Estado</th>
-</tr>
+      <tr>
 
-        </thead>
+        <th class="p-4 text-sm">#</th>
 
-        <tbody id="tablaRegistros" class="bg-white">
+        <th class="p-4 text-sm">Transportadora</th>
 
-        </tbody>
+        <th class="p-4 text-sm">BL</th>
 
-      </table>
+        <th class="p-4 text-sm">Pedido</th>
 
-    </div>
+        <th class="p-4 text-sm">Contenedor</th>
 
-  </div>
+        <th class="p-4 text-sm">Fecha Descargue</th>
+
+        <th class="p-4 text-sm">Datos</th>
+
+        <th class="p-4 text-sm">Hora Cita</th>
+
+        <th class="p-4 text-sm">Producto</th>
+
+        <th class="p-4 text-sm">Estado</th>
+
+      </tr>
+
+    </thead>
+
+    <tbody id="tablaRegistros" class="bg-white">
+
+    </tbody>
+
+  </table>
 
 </div>
 
@@ -643,17 +960,24 @@ function exportarExcel() {
 }
 let chartBar
 let chartPie
+let chartLine
 
 function generarGraficas() {
 
+  if (!registros || registros.length === 0) {
+    console.log('No hay registros')
+    return
+  }
+
   const productos = {}
   const transportadoras = {}
+  const fechas = {}
+  const contenedores = new Set()
 
   registros.forEach(item => {
 
     // PRODUCTOS
-    const producto =
-      item.producto || 'SIN PRODUCTO'
+    const producto = item.producto || 'SIN PRODUCTO'
 
     productos[producto] =
       (productos[producto] || 0) + 1
@@ -665,7 +989,62 @@ function generarGraficas() {
     transportadoras[transportadora] =
       (transportadoras[transportadora] || 0) + 1
 
+    // FECHAS
+    const fecha = item.fecha
+      ? new Date(item.fecha).toLocaleDateString('es-CO')
+      : 'SIN FECHA'
+
+    fechas[fecha] =
+      (fechas[fecha] || 0) + 1
+
+    // CONTENEDORES
+    if (item.contenedor) {
+      contenedores.add(item.contenedor)
+    }
+
   })
+
+  // TOPS
+  const topProductos =
+    Object.entries(productos)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+
+  const topTransportadoras =
+    Object.entries(transportadoras)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+
+  // KPI CARDS
+
+  document.getElementById('kpiSolicitudes').innerText =
+    registros.length
+
+  document.getElementById('kpiTransportadoras').innerText =
+    Object.keys(transportadoras).length
+
+  document.getElementById('kpiProducto').innerText =
+    topProductos[0]?.[0] || '-'
+
+  document.getElementById('kpiTopTransportadora').innerText =
+    topTransportadoras[0]?.[0] || '-'
+
+  document.getElementById('kpiContenedores').innerText =
+    contenedores.size
+// INDICADORES OPERATIVOS
+
+document.getElementById('indicadorSolicitudes')
+  .innerText = registros.length
+
+document.getElementById('indicadorProductos')
+  .innerText = Object.keys(productos).length
+
+document.getElementById('indicadorTransportadoras')
+  .innerText = Object.keys(transportadoras).length
+
+document.getElementById('indicadorContenedores')
+  .innerText = contenedores.size
+  // GRAFICAS
 
   const ctxBar =
     document.getElementById('graficaBarras')
@@ -673,15 +1052,18 @@ function generarGraficas() {
   const ctxPie =
     document.getElementById('graficaCircular')
 
-  if (chartBar) {
-    chartBar.destroy()
-  }
+  const ctxLine =
+    document.getElementById('graficaLinea')
 
-  if (chartPie) {
-    chartPie.destroy()
-  }
+  // DESTRUIR ANTERIORES
 
-  // BARRAS → PRODUCTOS
+  if (chartBar) chartBar.destroy()
+  if (chartPie) chartPie.destroy()
+  if (chartLine) chartLine.destroy()
+
+  // =========================
+  // BARRAS TRANSPORTADORAS
+  // =========================
 
   chartBar = new Chart(ctxBar, {
 
@@ -689,15 +1071,19 @@ function generarGraficas() {
 
     data: {
 
-      labels: Object.keys(productos),
+      labels:
+        topTransportadoras.map(x => x[0]),
 
       datasets: [{
 
-        label: 'Cantidad de Productos',
+        label: 'Solicitudes',
 
-        data: Object.values(productos),
+        data:
+          topTransportadoras.map(x => x[1]),
 
-        backgroundColor: '#00A651'
+        backgroundColor: '#16a34a',
+        borderRadius: 8,
+        barThickness: 18
 
       }]
     },
@@ -705,6 +1091,126 @@ function generarGraficas() {
     options: {
 
       responsive: true,
+
+      maintainAspectRatio: false,
+
+      plugins: {
+
+        legend: {
+          display: false
+        }
+      },
+
+      scales: {
+
+        y: {
+
+          ticks: {
+            color: '#374151'
+          }
+        },
+
+        x: {
+
+          ticks: {
+            color: '#374151'
+          }
+        }
+      }
+    }
+  })
+
+  // =========================
+  // DONA PRODUCTOS
+  // =========================
+
+  chartPie = new Chart(ctxPie, {
+
+    type: 'doughnut',
+
+    data: {
+
+      labels:
+        topProductos.map(x => x[0]),
+
+      datasets: [{
+
+        data:
+          topProductos.map(x => x[1]),
+
+        backgroundColor: [
+          '#16a34a',
+          '#22c55e',
+          '#4ade80',
+          '#15803d',
+          '#166534',
+          '#86efac',
+          '#14532d',
+          '#052e16',
+          '#bbf7d0',
+          '#dcfce7'
+        ],
+
+        borderWidth: 0
+      }]
+    },
+
+    options: {
+
+      responsive: true,
+
+      maintainAspectRatio: false,
+
+      cutout: '65%',
+
+      plugins: {
+
+        legend: {
+
+          position: 'bottom',
+
+          labels: {
+            boxWidth: 14,
+            padding: 15
+          }
+        }
+      }
+    }
+  })
+
+  // =========================
+  // TENDENCIA OPERACIONAL
+  // =========================
+
+  chartLine = new Chart(ctxLine, {
+
+    type: 'line',
+
+    data: {
+
+      labels: Object.keys(fechas),
+
+      datasets: [{
+
+        label: 'Solicitudes',
+
+        data: Object.values(fechas),
+
+        borderColor: '#16a34a',
+
+        backgroundColor: '#16a34a',
+
+        tension: 0.4,
+
+        fill: false
+      }]
+    },
+
+    options: {
+
+      responsive: true,
+
+      maintainAspectRatio: false,
 
       plugins: {
 
@@ -715,39 +1221,10 @@ function generarGraficas() {
     }
   })
 
-  // CIRCULAR → TRANSPORTADORAS
-
-  chartPie = new Chart(ctxPie, {
-
-    type: 'doughnut',
-
-    data: {
-
-      labels: Object.keys(transportadoras),
-
-      datasets: [{
-
-        label: 'Transportadoras',
-
-        data: Object.values(transportadoras),
-
-        backgroundColor: [
-          '#00A651',
-          '#111111',
-          '#4ade80',
-          '#86efac',
-          '#166534',
-          '#22c55e'
-        ]
-
-      }]
-    },
-
-    options: {
-      responsive: true
-    }
-  })
 }
+
+
+
 function convertirHora(hora) {
 
   if (!hora) return ''
